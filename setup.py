@@ -9,11 +9,11 @@ def read(fname):
 	return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 
-setup(name='dotpy',
+setup(name='sockdot',
 	version = '1.0.0',
 	author = 'Rubbie Kelvin',
 	author_email = 'rubbiekelvinvoltsman@gmail.com',
-	url = 'https://github.com/rubbiekelvin/Dotpy',
+	url = 'https://github.com/rubbiekelvin/sockdot',
 	description = 'Multithreaded TCP server/client',
 	long_description = read('README.md'),
 	long_description_content_type='text/markdown',

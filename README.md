@@ -1,4 +1,4 @@
-# DotPy
+# Sockdot
 
 ### simplified tcp networking library
 note: This is not a websocket
@@ -7,7 +7,7 @@ documentation would be ready in a while
 
 ### Installation
 ```shell
-pip install dotpy
+pip install sockdot
 ```
 
 ### Usage
@@ -15,8 +15,8 @@ pip install dotpy
 server.py
 
 ```python
-from dotpy import Server
-from dotpy.events import Event
+from sockdot import Server
+from sockdot.events import Event
 
 serverevents = Event()
 server = Server(debug=True)
@@ -59,8 +59,8 @@ client.py
 
 ```python
 import time
-from dotpy import Client
-from dotpy.events import Event
+from sockdot import Client
+from sockdot.events import Event
 
 clientevents = Event()
 client = Client(host="localhost", debug=True)
