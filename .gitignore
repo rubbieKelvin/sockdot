@@ -1,1 +1,9 @@
 *.pyc
+testscript.py
+testscript2.py
+.auth
+server.log
+client.log
+dotpy.egg-info/
+build/
+dist/
