@@ -40,6 +40,7 @@ def on_server_destruct():
 
 @serverevents.event
 def on_error(exception, message):
+	# print(f"error {exception} occured, message:", message)
 	pass
 
 @serverevents.event
@@ -58,12 +59,19 @@ server.run()
 client.py
 
 ```python
-import time
+import time, threading
 from sockdot import Client
 from sockdot.events import Event
 
 clientevents = Event()
-client = Client(host="localhost", debug=True)
+client = Client(host="rubbie-io", debug=True)
+
+def start(connected):
+	if connected:
+		for i in range(10):
+			client.send(str(i))
+			time.sleep(4)
+		client.close()
 
 @clientevents.event
 def on_data_recieved(data):
@@ -71,7 +79,7 @@ def on_data_recieved(data):
 
 @clientevents.event
 def on_connected_changed(connected):
-	pass
+	threading.Thread(target=start, args=(connected,)).start()
 
 @clientevents.event
 def on_error(exception, message):
@@ -96,15 +104,35 @@ def on_handshake_ended(result):
 client.updateevent(clientevents)
 client.connect()
 
-# hold on until client gets connected to server
-while True:
-	if client.connected:
-		break
+```
 
-# send i for i in range 10
-for i in range(10):
-	client.send(str(i))
-	time.sleep(4)
-client.close()
+## Adding authenthecation
+create a file <b>".auth"</b>. the file contains keys and values of security parameters
 
+```json
+{
+	"SECURITY_KEY" : "secret key",
+	"WHITELIST": [],
+	"BLACKLIST": [],
+	"USE_WHITELIST": false
+}
+```
+
+in server.py, make this change:
+```python
+# from file...
+server = Server(debug=True, auth=".auth")
+
+# from dictionary
+server = Server(debug=True, auth={
+	"SECURITY_KEY" : "secret key",
+	"WHITELIST": [],
+	"BLACKLIST": [],
+	"USE_WHITELIST": False
+})
+```
+
+in client.py, make this change:
+```python
+client.connect(authkey="secret key")
 ```

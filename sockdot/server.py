@@ -35,9 +35,15 @@ class Server:
 		}
 		if auth is None:
 			self.auth = auth
+		elif type(auth) is dict:
+			self.auth.update(auth)
 		else:
 			with open(auth) as file:
-				self.auth.update(json.load(file))
+				try:
+					self.auth.update(json.load(file))
+				except json.JSONDecodeError as e:
+					logging.error("error reading auth file")
+
 
 		# Initialize log file format.
 		logging.basicConfig(
@@ -53,6 +59,12 @@ class Server:
 
 	def updateevent(self, event):
 		self.events.update(event.get() if type(event)==events.Event else event.copy())
+
+	def updateauth(self, auth, filename=None):
+		self.auth.update(auth)
+		if filename is not None:
+			with open(filename) as file:
+				json.dumps(self.auth, file)
 
 	@property
 	def host(self):
@@ -135,7 +147,11 @@ class Server:
 		return client.recv(2048).decode("utf8")
 
 	def send(self, client, data):
-		client.send(bytes(data, "utf8"))
+		if data:
+			data = bytes(str(data), "utf8") if type(data)!=bytes else data
+			res = client.send(data)
+			return res
+		return 0
 
 	def broadcast(self, data):
 		for client in self.clients:

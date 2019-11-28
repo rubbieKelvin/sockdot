@@ -54,10 +54,21 @@ class Client:
 		threading.Thread(target=self.connect_, args=(authkey,)).start()
 
 	def connect_(self, authkey):
-		self.sock.connect((self.host, self.port))
-		logging.info("initial connection started")
-		self.events["on_handshake_started"]()
-		self.handshake(authkey)
+		try:
+			self.sock.connect((self.host, self.port))
+			logging.info("initial connection started")
+			self.events["on_handshake_started"]()
+			try:
+				self.handshake(authkey)
+			except (ConnectionAbortedError, ConnectionResetError) as e:
+				err_msg = "server shutdown during handshake"
+				self.events["on_error"](e, err_msg)
+				logging.error(err_msg)
+				self.close()
+		except ConnectionRefusedError as e:
+			err_msg = "no connection could be made because host doesnt exist"
+			self.events["on_error"](e, err_msg)
+			self.close()
 
 	def handshake(self, authkey):
 		self.send(authkey)
@@ -77,6 +88,7 @@ class Client:
 		while self.connected:
 			try:
 				data = self.recv()
+				print("recieved", data)
 				self.events["on_data_recieved"](data)
 				logging.info("recieved data: "+data)
 			except (ConnectionResetError, ConnectionAbortedError) as e:
@@ -86,8 +98,11 @@ class Client:
 				self.close()
 
 	def send(self, data):
-		data = bytes(str(data), "utf8") if type(data)!=bytes else data
-		self.sock.send(data)
+		if data:
+			data = bytes(str(data), "utf8") if type(data)!=bytes else data
+			res = self.sock.send(data)
+			return res
+		return 0
 
 	def recv(self):
 		return self.sock.recv(2048).decode("utf8")
