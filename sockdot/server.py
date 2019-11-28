@@ -143,15 +143,23 @@ class Server:
 			return True
 		return res
 
-	def recv(self, client):
-		return client.recv(2048).decode("utf8")
-
 	def send(self, client, data):
 		if data:
-			data = bytes(str(data), "utf8") if type(data)!=bytes else data
+			br = base64.b85encode(os.urandom(4)).decode("utf8")
+			data = f"{br}::{data}::</{br}>"
+			data = bytes(data, "utf8")
 			res = client.send(data)
 			return res
 		return 0
+
+	def recv(self, client):
+		res = client.recv(2048).decode("utf8")
+
+		br = res.split("::")[0]
+		while not res.endswith(f"</{br}>"):
+			res = res+client.recv(2048).decode("utf8")
+
+		return res[len(br)+2:][:-len(br)-5]
 
 	def broadcast(self, data):
 		for client in self.clients:

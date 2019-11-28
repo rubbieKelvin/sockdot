@@ -99,13 +99,21 @@ class Client:
 
 	def send(self, data):
 		if data:
-			data = bytes(str(data), "utf8") if type(data)!=bytes else data
+			br = base64.b85encode(os.urandom(4)).decode("utf8")
+			data = f"{br}::{data}::</{br}>"
+			data = bytes(data, "utf8")
 			res = self.sock.send(data)
 			return res
 		return 0
 
 	def recv(self):
-		return self.sock.recv(2048).decode("utf8")
+		res = self.sock.recv(2048).decode("utf8")
+
+		br = res.split("::")[0]
+		while not res.endswith(f"</{br}>"):
+			res = res+self.sock.recv(2048).decode("utf8")
+
+		return res[len(br)+2:][:-len(br)-5]
 
 	def close(self):
 		if self.sock is not None: self.sock.close()
