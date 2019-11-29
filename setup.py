@@ -21,7 +21,7 @@ setup(name='sockdot',
 	keywords = 'socket client server multithreaded',
 	packages = find_packages(),
 	classifiers=[
-		"Programing Language :: Python :: 3",
+		"Programming Language :: Python :: 3",
 		"Operating Sytem :: OS Independent"
 	]
 )
