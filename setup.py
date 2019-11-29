@@ -22,6 +22,6 @@ setup(name='sockdot',
 	packages = find_packages(),
 	classifiers=[
 		"Programming Language :: Python :: 3",
-		"Operating Sytem :: OS Independent"
+		"Operating System :: OS Independent"
 	]
 )
