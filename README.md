@@ -1,19 +1,27 @@
 # Sockdot
 
 ### simplified tcp networking library
-note: This is not a websocket
-i'd write a little peice of introduction here, with a little bit of shit :D
-documentation would be ready in a while
+note: This is <b>not a websocket.</b>
+<br>
+
+sockdot allows you to create server/client applications without having to use web-standard protocols in your application. the library is a threaded tcp socket and allows for events to be used, making it easy to inpliment in server/client application. i created this library to meet my needs in a Lan software project, so 't could be of use to someone else :).
 
 ### Installation
 ```shell
 pip install sockdot
 ```
 
+Installing from source.
+```shell
+git clone https://github.com/rubbiekelvin/sockdot.git
+cd sockdot
+python setup.py sdist bdist_wheel
+pip install dist\sockdot-1.0.1-py3-none-any.whl
+```
+
 ### Usage
 
-server.py
-
+server.py</br>
 ```python
 from sockdot import Server
 from sockdot.events import Event
@@ -54,6 +62,12 @@ def on_running_changed(running):
 server.updateevent(serverevents)
 server.run()
 
+```
+<small>the server's runs on the machine's host name</small>
+```python
+from sockdot import host
+print(host())
+# outputs ["host_name", "host_ip"]
 ```
 
 client.py
@@ -107,7 +121,8 @@ client.connect()
 ```
 
 ## Adding authenthecation
-create a file <b>".auth"</b>. the file contains keys and values of security parameters
+create a file <b>".auth"</b>, could be anything you want, but in my case, i named it ".auth". the file contains keys and values of security parameters in json format.
+
 
 ```json
 {
@@ -118,7 +133,8 @@ create a file <b>".auth"</b>. the file contains keys and values of security para
 }
 ```
 
-in server.py, make this change:
+in server.py, make this change:<br>
+note that it is also possible for auth settings to be in a python dictionary, use could use any one you want. the <span style="color: #26c6da;">auth</span> keyword argument can be a <span style="color: #ffa000;">str</span> (filename) type or <span style="color: #ffa000;">dict</span> (auth dictionary).
 ```python
 # from file...
 server = Server(debug=True, auth=".auth")

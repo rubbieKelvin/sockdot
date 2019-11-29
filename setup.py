@@ -10,7 +10,7 @@ def read(fname):
 
 
 setup(name='sockdot',
-	version = '1.0.0',
+	version = '1.0.1',
 	author = 'Rubbie Kelvin',
 	author_email = 'rubbiekelvinvoltsman@gmail.com',
 	url = 'https://github.com/rubbiekelvin/sockdot',
@@ -18,6 +18,10 @@ setup(name='sockdot',
 	long_description = read('README.md'),
 	long_description_content_type='text/markdown',
 	license = 'MIT',
-	keywords = 'socket client server multithreaded', 
-	packages = find_packages()
+	keywords = 'socket client server multithreaded',
+	packages = find_packages(),
+	classifiers=[
+		"Programing Language :: Python :: 3",
+		"Operating Sytem :: OS Independent"
+	]
 )
